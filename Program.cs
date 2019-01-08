@@ -23,13 +23,13 @@ namespace binance_bot
             TimeSpan interval = new TimeSpan(0, 0, 1);
             BinanceClient.SetDefaultOptions(new BinanceClientOptions()
             {
-                ApiCredentials = new ApiCredentials("WHLNuDNGlJZf6ZPqa8afjop3QNx8mClSJLUgGW9rCnXvD040l6wgdiOqZMAuByQS", "CDnTG3tLeArvurRLVKw4hniC0wB8D1rKrDgQDRDhrbwHXd4L66WFuf1P5ivIUbId"),
+                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_KEY"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
             BinanceSocketClient.SetDefaultOptions(new BinanceSocketClientOptions()
             {
-                ApiCredentials = new ApiCredentials("WHLNuDNGlJZf6ZPqa8afjop3QNx8mClSJLUgGW9rCnXvD040l6wgdiOqZMAuByQS", "CDnTG3tLeArvurRLVKw4hniC0wB8D1rKrDgQDRDhrbwHXd4L66WFuf1P5ivIUbId"),
+                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_KEY"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
