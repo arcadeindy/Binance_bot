@@ -17,19 +17,18 @@ namespace binance_bot
         {
             decimal[] price = new decimal[10];
             decimal[] sell = new decimal[10];
-            int index = 0;
+            int index = 0, element;
             decimal value = 0.000000000000001m;
-            int element, inside;
-            TimeSpan interval = new TimeSpan(0, 0, 1);
+            TimeSpan interval = new TimeSpan(0, 0, 3);
             BinanceClient.SetDefaultOptions(new BinanceClientOptions()
             {
-                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_KEY"),
+                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_API_KEY"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
             BinanceSocketClient.SetDefaultOptions(new BinanceSocketClientOptions()
             {
-                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_KEY"),
+                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_API_KEY"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
@@ -49,59 +48,61 @@ namespace binance_bot
                             return reader.ReadToEnd();
                         }
                     }
-                    for (inside = 1, element = 0; element < 10; element++)
+                    string binance = Get("https://api.binance.com/api/v1/depth?symbol=BNBBTC&limit=10");
+
+                    /*-------------------------------------------------------------Продажа-------------------------------------------------------------*/
+
+                    for (element = 0; element < 10; element++)
                     {
-                        string binance = Get("https://api.binance.com/api/v1/depth?symbol=BNBBTC&limit=10");
                         dynamic decoded = JsonConvert.DeserializeObject(binance);
-                        var bid = decoded.bids[element][inside];
-                        sell[element] = bid;
-                        if (sell[element] >= value)
-                        {
-                            value = sell[element];
-                            index++;
-                        }
-                        Console.WriteLine($"ордер на продажу: {sell[element]}");
-                    }
-                    Console.WriteLine(index);
-                    for (inside = 0, element = 0; element < 10; element++)
-                    {
-                        string binance = Get("https://api.binance.com/api/v1/depth?symbol=BNBBTC&limit=10");
-                        dynamic decoded = JsonConvert.DeserializeObject(binance);
-                        var bid = decoded.bids[element][inside];
-                        price[element] = bid;
-                        Console.WriteLine($"цена продажи: {price[element]}");
-                        if (element == 9)
-                            Console.WriteLine($"цена нужного ордера: {price[index]}");
-                    }
-                    var orderSellt = client.PlaceOrder("BNBBTC", OrderSide.Sell, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
-                    Thread.Sleep(3000);
-                    var cancelSell = client.CancelOrder("BNBBTC", orderSellt.Data.OrderId);
-                    for (inside = 1, element = 0; element < 10; element++)
-                    {
-                        string binance = Get("https://api.binance.com/api/v1/depth?symbol=BNBBTC&limit=10");
-                        dynamic decoded = JsonConvert.DeserializeObject(binance);
-                        var ask = decoded.asks[element][inside];
+                        var ask = decoded.asks[element][1];
                         sell[element] = ask;
                         if (sell[element] >= value)
                         {
                             value = sell[element];
-                            index++;
+                            index = element;
+                        }
+                        
+                        Console.WriteLine($"ордер на продажу: {sell[element]}");
+                    }
+                    Console.WriteLine(index);
+
+                    for (element = 0; element < 10; element++)
+                    {
+                        dynamic decoded = JsonConvert.DeserializeObject(binance);
+                        var ask = decoded.asks[element][0];
+                        price[element] = ask;
+                        Console.WriteLine($"цена продажи: {price[element]}");
+                    }
+                    Console.WriteLine($"цена нужного ордера: {price[index]}");
+                    var orderSellt = client.PlaceOrder("BNBBTC", OrderSide.Sell, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
+
+                    /*-------------------------------------------------------------Покупка-------------------------------------------------------------*/
+
+                    for (element = 0; element < 10; element++)
+                    {
+                        dynamic decoded = JsonConvert.DeserializeObject(binance);
+                        var bid = decoded.bids[element][1];
+                        sell[element] = bid;
+                        if (sell[element] >= value)
+                        {
+                            value = sell[element];
+                            index = element;
                         }
                         Console.WriteLine($"ордер на покупку: {sell[element]}");
                     }
-                    for (inside = 0, element = 0; element < 10; element++)
+                    Console.WriteLine(index);
+
+                    for (element = 0; element < 10; element++)
                     {
-                        string binance = Get("https://api.binance.com/api/v1/depth?symbol=BNBBTC&limit=10");
                         dynamic decoded = JsonConvert.DeserializeObject(binance);
-                        var ask = decoded.asks[element][inside];
-                        price[element] = ask;
+                        var bid = decoded.bids[element][0];
+                        price[element] = bid;
                         Console.WriteLine($"цена покупки: {price[element]}");
-                        if (element == 9)
-                            Console.WriteLine($"цена нужного ордера: {price[index]}");
                     }
+                    Console.WriteLine($"цена нужного ордера: {price[index]}");
                     var orderBuy = client.PlaceOrder("BNBBTC", OrderSide.Buy, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
-                    Thread.Sleep(3000);
-                    var cancelByu = client.CancelOrder("BNBBTC", orderBuy.Data.OrderId);
+                    Thread.Sleep(1000);
                 }
             }
         }
