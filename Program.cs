@@ -5,9 +5,9 @@ using CryptoExchange.Net.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Net;
+using System.Threading;
 
 namespace binance_bot
 {
@@ -17,24 +17,25 @@ namespace binance_bot
         {
             BinanceClient.SetDefaultOptions(new BinanceClientOptions()
             {
-                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_API_KEY"),
+                ApiCredentials = new ApiCredentials("API_KEY", "API_SECRET"),
+", "CDnTG3tLeArvurRLVKw4hniC0wB8D1rKrDgQDRDhrbwHXd4L66WFuf1P5ivIUbId"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
             BinanceSocketClient.SetDefaultOptions(new BinanceSocketClientOptions()
             {
-                ApiCredentials = new ApiCredentials("API_KEY", "SECRET_API_KEY"),
+                ApiCredentials = new ApiCredentials("API_KEY", "API_SECRET"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
 
             while (true)
             {
-                Sell();
                 Buy();
+                Sell();
             }
         }
-        public static void Sell()
+        protected static void Sell()
         {
             int index = 0, element;
             decimal[] price = new decimal[10];
@@ -55,8 +56,6 @@ namespace binance_bot
                     }
                 }
                 string binance = Get("https://api.binance.com/api/v1/depth?symbol=BNBBTC&limit=10");
-
-                /*-------------------------------------------------------------Продажа-------------------------------------------------------------*/
 
                 for (element = 0; element < 10; element++)
                 {
@@ -81,13 +80,11 @@ namespace binance_bot
                     Console.WriteLine($"цена продажи: {price[element]}");
                 }
                 Console.WriteLine($"цена нужного ордера: {price[index]}");
-                var orderSellt = client.PlaceOrder("BNBBTC", OrderSide.Sell, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
-                Thread.Sleep(10000);
-                var cancelSellt = client.CancelOrder("BNBBTC", orderSellt.Data.OrderId);
+                var orderSellt = client.PlaceOrder("BNBBTC", OrderSide.Sell, OrderType.Limit, 0.7m, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
             }
         }
 
-        public static void Buy()
+        protected static void Buy()
         {
             int index = 0, element;
             decimal[] price = new decimal[10];
@@ -131,11 +128,8 @@ namespace binance_bot
                     Console.WriteLine($"цена продажи: {price[element]}");
                 }
                 Console.WriteLine($"цена нужного ордера: {price[index]}");
-                var orderSellt = client.PlaceOrder("BNBBTC", OrderSide.Sell, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
-                Thread.Sleep(10000);
-                var cancelSellt = client.CancelOrder("BNBBTC", orderSellt.Data.OrderId);
+                var orderBuy = client.PlaceOrder("BNBBTC", OrderSide.Buy, OrderType.Limit, 0.7m, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
             }
         } 
     }
 }
-
