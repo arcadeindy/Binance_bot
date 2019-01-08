@@ -28,16 +28,9 @@ namespace binance_bot
                 LogWriters = new List<TextWriter> { Console.Out }
             });
 
-            try
+            while (true)
             {
-                while (true)
-                {
-                    Sell();
-                    Buy();
-                }
-            }
-            catch
-            {
+                Sell();
                 Buy();
             }
         }
