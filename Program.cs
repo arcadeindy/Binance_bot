@@ -15,9 +15,9 @@ namespace binance_bot
     {
         static void Main(string[] args)
         {
+            int index = 0, element;
             decimal[] price = new decimal[10];
             decimal[] sell = new decimal[10];
-            int index = 0, element;
             decimal value = 0.000000000000001m;
             TimeSpan interval = new TimeSpan(0, 0, 3);
             BinanceClient.SetDefaultOptions(new BinanceClientOptions()
