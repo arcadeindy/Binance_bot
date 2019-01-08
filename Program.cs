@@ -18,7 +18,6 @@ namespace binance_bot
             BinanceClient.SetDefaultOptions(new BinanceClientOptions()
             {
                 ApiCredentials = new ApiCredentials("API_KEY", "API_SECRET"),
-", "CDnTG3tLeArvurRLVKw4hniC0wB8D1rKrDgQDRDhrbwHXd4L66WFuf1P5ivIUbId"),
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
