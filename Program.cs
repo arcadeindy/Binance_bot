@@ -76,6 +76,8 @@ namespace binance_bot
                     }
                     Console.WriteLine($"цена нужного ордера: {price[index]}");
                     var orderSellt = client.PlaceOrder("BNBBTC", OrderSide.Sell, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
+                    Thread.Sleep(10000);
+                    var cancelSellt = client.CancelOrder("BNBBTC", orderSellt.Data.OrderId);
 
                     /*-------------------------------------------------------------Покупка-------------------------------------------------------------*/
 
@@ -102,6 +104,8 @@ namespace binance_bot
                     }
                     Console.WriteLine($"цена нужного ордера: {price[index]}");
                     var orderBuy = client.PlaceOrder("BNBBTC", OrderSide.Buy, OrderType.Limit, 1, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
+                    Thread.Sleep(10000);
+                    var cancelBuy = client.CancelOrder("BNBBTC", orderBuy.Data.OrderId);
                 }
             }
         }
