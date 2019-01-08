@@ -28,7 +28,7 @@ namespace binance_bot
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
-
+/*
             using (var client = new BinanceClient())
             {
                 while (true)
@@ -38,7 +38,13 @@ namespace binance_bot
 
                 }
             }
-
+*/          
+            using (var client = new WebClient())
+            {
+                responseString = client.DownloadString("https://api.binance.com/api/v1/depth?symbol=ETHBTC&limit=10");
+            }
+            var response = JsonConvert.DeserializeObject<Response>(responseString);
+            Console.WriteLine(response);
         }
     }
 }
