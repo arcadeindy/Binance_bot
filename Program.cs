@@ -43,8 +43,8 @@ namespace binance_bot
             {
                 responseString = client.DownloadString("https://api.binance.com/api/v1/depth?symbol=ETHBTC&limit=10");
             }
-            var response = JsonConvert.DeserializeObject<Response>(responseString);
-            Console.WriteLine(response);
+            var json = JsonConvert.DeserializeObject<List<Response>>(responseString);
+            
         }
     }
 }
