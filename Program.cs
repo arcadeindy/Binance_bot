@@ -13,6 +13,9 @@ namespace binance_bot
 {
     class Program
     {
+        public static string couple = "";
+        public static decimal coins = 0.0m;
+
         static void Main(string[] args)
         {
             BinanceClient.SetDefaultOptions(new BinanceClientOptions()
@@ -27,7 +30,12 @@ namespace binance_bot
                 LogVerbosity = LogVerbosity.Debug,
                 LogWriters = new List<TextWriter> { Console.Out }
             });
-
+            
+            Console.WriteLine("Введите торговую пару большими буквами без пробелов");
+            couple = Console.ReadLine();
+            Console.WriteLine("Введите количество монет, которыми будете торговать");
+            coins = Convert.ToDecimal(Console.ReadLine());
+            
             while (true)
             {
                 Buy();
