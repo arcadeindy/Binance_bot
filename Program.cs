@@ -107,8 +107,8 @@ namespace binance_bot
                 for (element = 0; element < 10; element++)
                 {
                     dynamic decoded = JsonConvert.DeserializeObject(binance);
-                    var ask = decoded.asks[element][1];
-                    sell[element] = ask;
+                    var bids = decoded.bids[element][1];
+                    sell[element] = bids;
                     if (sell[element] >= value)
                     {
                         value = sell[element];
@@ -122,8 +122,8 @@ namespace binance_bot
                 for (element = 0; element < 10; element++)
                 {
                     dynamic decoded = JsonConvert.DeserializeObject(binance);
-                    var ask = decoded.asks[element][0];
-                    price[element] = ask;
+                    var bids = decoded.bids[element][0];
+                    price[element] = bids;
                     Console.WriteLine($"цена продажи: {price[element]}");
                 }
                 Console.WriteLine($"цена нужного ордера: {price[index]}");
