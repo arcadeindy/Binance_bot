@@ -13,6 +13,7 @@ namespace binance_bot
 {
     class Program
     {
+        public static decimal priceForOrder = 0;
         public static decimal priceBuy = 0;
         public static decimal priceSell = 0;
         public static string couple = "";
@@ -44,13 +45,14 @@ namespace binance_bot
             couple = Console.ReadLine();
             Console.WriteLine("Введите количество монет, которыми будете торговать");
             coins = Convert.ToDecimal(Console.ReadLine());
-            ShowWindow(GetConsoleWindow(), 0); // 0 - свернуть в трей, 1 - показать консольное окно
+            ShowWindow(GetConsoleWindow(), 1); // 0 - свернуть в трей, 1 - показать консольное окно
             while (true)
             {
                 Buy();
                 Sell();
             }
         }
+
         protected static void Buy()
         {
             int index = 0, element;
@@ -97,11 +99,13 @@ namespace binance_bot
                 }
                 Console.WriteLine($"цена нужного ордера: {price[index]}");
                 priceBuy = price[index];
-                var orderBuy = client.PlaceOrder(couple, OrderSide.Buy, OrderType.Limit, coins, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
+                priceForOrder = priceBuy - Fee(priceBuy);
+                priceForOrder = Math.Round(priceForOrder, 3);
+                var orderBuy = client.PlaceOrder(couple, OrderSide.Buy, OrderType.Limit, coins, price: priceForOrder, timeInForce: TimeInForce.GoodTillCancel);
             }
         }
 
-        protected static int Sell()
+        protected static void Sell()
         {
             int index = 0, element;
             decimal[] price = new decimal[10];
@@ -147,17 +151,12 @@ namespace binance_bot
                 }
                 Console.WriteLine($"цена нужного ордера: {price[index]}");
                 priceSell = price[index];
-                var orderSellt = client.PlaceOrder(couple, OrderSide.Sell, OrderType.Limit, coins, price: price[index], timeInForce: TimeInForce.GoodTillCancel);
-
-                if (Fee(priceBuy) + Fee(priceSell) == priceSell - priceBuy || Fee(priceBuy) + Fee(priceSell) > priceSell - priceBuy)
-                {
-                    var cancelResult = client.CancelOrder(couple, orderSellt.Data.OrderId);
-                    return Sell();
-                }
-                return Sell();
+                priceForOrder = priceSell + Fee(priceSell);
+                priceForOrder = Math.Round(priceForOrder, 3);
+                var orderSellt = client.PlaceOrder(couple, OrderSide.Sell, OrderType.Limit, coins, price: priceForOrder, timeInForce: TimeInForce.GoodTillCancel);
+                
             }
         }
-
         public static decimal Fee(decimal order)
         {
             return  order / 100 * 0.075m;
