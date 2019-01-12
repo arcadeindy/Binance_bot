@@ -13,6 +13,7 @@ namespace binance_bot
 {
     class Program
     {
+        public static int trey = 1;
         public static decimal priceForOrder = 0;
         public static decimal priceBuy = 0;
         public static decimal priceSell = 0;
@@ -45,6 +46,9 @@ namespace binance_bot
             couple = Console.ReadLine();
             Console.WriteLine("Введите количество монет, которыми будете торговать");
             coins = Convert.ToDecimal(Console.ReadLine());
+            Console.WriteLine("Хотите скрыть консольное окно?");
+            Console.WriteLine("0 - нет, 1 - да");
+            trey = Convert.ToInt32(Console.ReadLine());
             ShowWindow(GetConsoleWindow(), 1); // 0 - свернуть в трей, 1 - показать консольное окно
             while (true)
             {
