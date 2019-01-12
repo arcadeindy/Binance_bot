@@ -154,7 +154,7 @@ namespace binance_bot
                     var cancelResult = client.CancelOrder(couple, orderSellt.Data.OrderId);
                     return Sell();
                 }
-                return 0;
+                return Sell();
             }
         }
 
